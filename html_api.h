@@ -19,6 +19,8 @@
 // API call to get data or execute commands via WebIf
 //####################################################################
 void html_api() {
+  // Note: the ESP8266WebServer already decodes the form arguments and therefore we don't have to use urldecode() here again! This would be a problem when a "+" is within the string because that is replaced to " ", for example.
+  
   if (debug_webui) Serial.printf("html_api server.args()=%d \n", server.args());
   if (server.args() > 0 ) {
     // get server args from HTML POST
@@ -28,25 +30,25 @@ void html_api() {
     if (debug_webui) {
       for ( uint8_t i = 0; i < server.args(); i++ ) {
         Serial.printf("server.argName(%d) == %s\n", i, server.argName(i).c_str());
-        Serial.printf(" urldecode: %s\n", urldecode(server.arg(i)).c_str());
+        Serial.printf(" value: %s\n", server.arg(i).c_str());
       }
     }
     for ( uint8_t i = 0; i < server.args(); i++ ) {
-      if (server.argName(i) == "cmd") cmd         = urldecode(server.arg(i));
+      if (server.argName(i) == "cmd") cmd         = server.arg(i);
       if (server.argName(i) == "channel") channel = server.arg(i).toInt();
-      if (server.argName(i) == "channel_name") channel_name = urldecode(server.arg(i));
+      if (server.argName(i) == "channel_name") channel_name = server.arg(i);
 
-      if (server.argName(i) == "ssid") config.ssid                           = urldecode(server.arg(i));
-      if (server.argName(i) == "password") config.password                   = urldecode(server.arg(i));
+      if (server.argName(i) == "ssid") config.ssid                           = server.arg(i);
+      if (server.argName(i) == "password") config.password                   = server.arg(i);
 
-      if (server.argName(i) == "mqtt_broker_port") config.mqtt_broker_port            = urldecode(server.arg(i));
-      if (server.argName(i) == "mqtt_broker_client_id") config.mqtt_broker_client_id  = urldecode(server.arg(i));
-      if (server.argName(i) == "mqtt_broker_username") config.mqtt_broker_username    = urldecode(server.arg(i));
-      if (server.argName(i) == "mqtt_broker_password") config.mqtt_broker_password    = urldecode(server.arg(i));
-      if (server.argName(i) == "mqtt_devicetopic") config.mqtt_devicetopic_new               = urldecode(server.arg(i));
+      if (server.argName(i) == "mqtt_broker_port") config.mqtt_broker_port            = server.arg(i);
+      if (server.argName(i) == "mqtt_broker_client_id") config.mqtt_broker_client_id  = server.arg(i);
+      if (server.argName(i) == "mqtt_broker_username") config.mqtt_broker_username    = server.arg(i);
+      if (server.argName(i) == "mqtt_broker_password") config.mqtt_broker_password    = server.arg(i);
+      if (server.argName(i) == "mqtt_devicetopic") config.mqtt_devicetopic_new               = server.arg(i);
 
-      if (server.argName(i) == "master_msb") config.master_msb = urldecode(server.arg(i));
-      if (server.argName(i) == "master_lsb") config.master_lsb = urldecode(server.arg(i));
+      if (server.argName(i) == "master_msb") config.master_msb = server.arg(i);
+      if (server.argName(i) == "master_lsb") config.master_lsb = server.arg(i);
 
       if (server.argName(i) == "ip_0") if (checkRange(server.arg(i)))   config.ip[0] =  server.arg(i).toInt();
       if (server.argName(i) == "ip_1") if (checkRange(server.arg(i)))   config.ip[1] =  server.arg(i).toInt();
@@ -67,17 +69,17 @@ void html_api() {
       if (server.argName(i) == "mqtt_broker_addr_3") if (checkRange(server.arg(i)))   config.mqtt_broker_addr[3] =  server.arg(i).toInt();
 
       if (server.argName(i) == "dhcp")
-        config.dhcp = (urldecode(server.arg(i)) == "true");
+        config.dhcp = (server.arg(i) == "true");
       if (server.argName(i) == "learn_mode")
-        config.learn_mode = (urldecode(server.arg(i)) == "true");
+        config.learn_mode = (server.arg(i) == "true");
       if (server.argName(i) == "set_and_generate_serial")
-        config.set_and_generate_serial = (urldecode(server.arg(i)) == "true");
+        config.set_and_generate_serial = (server.arg(i) == "true");
       if (server.argName(i) == "serial")
-        config.new_serial = urldecode(server.arg(i));
+        config.new_serial = server.arg(i);
       if (server.argName(i) == "set_devicecounter")
-        config.set_devicecounter = (urldecode(server.arg(i)) == "true");
+        config.set_devicecounter = (server.arg(i) == "true");
       if (server.argName(i) == "devicecounter")
-        config.new_devicecounter = urldecode(server.arg(i));
+        config.new_devicecounter = server.arg(i);
     } // for
     if (cmd != "") {
       if (cmd == "eventlog") {

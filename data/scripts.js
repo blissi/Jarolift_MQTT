@@ -144,7 +144,7 @@ function writeConfig(cmd){
 				params += element.name + "=false&"
 			}
 		}else{
-			params += element.name + "=" + element.value + "&"
+			params += element.name + "=" + encodeURIComponent(element.value) + "&"
 		}
 	}
 	var http = new XMLHttpRequest();
